@@ -1,0 +1,96 @@
+Enum "gender" {
+  "MALE"
+  "FEMALE"
+}
+
+Table "country" {
+  "id" SERIAL [pk]
+  "name" VARCHAR(255) [not null]
+}
+
+Table "departament" {
+  "id" SERIAL [pk]
+  "country_id" INT [not null]
+  "name" VARCHAR(255) [not null]
+}
+
+Table "spacemission" {
+  "id" SERIAL [pk]
+  "country_id" INT [not null]
+}
+
+Table "telescope" {
+  "id" SERIAL [pk]
+}
+
+Table "telescope_spacemission" {
+  "telescope_id" INT [not null]
+  "spacemission_id" INT [not null]
+
+Indexes {
+  (telescope_id, spacemission_id) [pk]
+}
+
+}
+
+Table "spaceship" {
+  "id" SERIAL [pk]
+  "name" VARCHAR(255) [not null]
+}
+
+Table "spaceship_spacemission" {
+  "spaceship_id" INT [not null]
+  "spacemission_id" INT [not null]
+
+Indexes {
+  (spaceship_id, spacemission_id) [pk]
+}
+}
+
+Table "person" {
+  "id" SERIAL [pk]
+  "name" VARCHAR(255) [not null]
+  "last_name" VARCHAR(255) [not null]
+  "patronymic" VARCHAR(255)
+  "gender" gender
+}
+
+Table "crew_member" {
+  "id" INT [pk]
+  "spaceship_id" INT [not null]
+}
+
+Table "scientist" {
+  "id" INT [pk]
+}
+
+Table "telescope_scientist" {
+  "telescope_id" INT [not null]
+  "scientist_id" INT [not null]
+
+Indexes {
+  (telescope_id, scientist_id) [pk]
+}
+}
+
+Ref:"country"."id" < "departament"."country_id" [delete: cascade]
+
+Ref:"country"."id" < "spacemission"."country_id" [delete: cascade]
+
+Ref:"telescope"."id" < "telescope_spacemission"."telescope_id" [delete: cascade]
+
+Ref:"spacemission"."id" < "telescope_spacemission"."spacemission_id" [delete: cascade]
+
+Ref:"spaceship"."id" < "spaceship_spacemission"."spaceship_id" [delete: cascade]
+
+Ref:"spacemission"."id" < "spaceship_spacemission"."spacemission_id" [delete: cascade]
+
+Ref:"person"."id" < "crew_member"."id" [delete: cascade]
+
+Ref:"spaceship"."id" < "crew_member"."spaceship_id" [delete: cascade]
+
+Ref:"person"."id" < "scientist"."id" [delete: cascade]
+
+Ref:"telescope"."id" < "telescope_scientist"."telescope_id" [delete: cascade]
+
+Ref:"scientist"."id" < "telescope_scientist"."scientist_id" [delete: cascade]
